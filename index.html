@@ -11,7 +11,7 @@
 
     <!-- Including the Mapbox GL JS file -->
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.5.0/mapbox-gl.js"></script>
-
+    
     <style>
         /* CSS styles for the layout and components */
         body {
@@ -86,18 +86,18 @@
         let map = new mapboxgl.Map({
             container: 'map', // container ID
             style: 'mapbox://styles/mapbox/satellite-v9', // style URL
-            zoom: 5, // starting zoom
-            center: [4, 11] // starting center
+            zoom: 5.5, // starting zoom
+            center: [-155, 20] // starting center
         });
 
 
         async function geojsonFetch() {
 
-            let response, earthquakes, japan, table;
-            response = await fetch('cameroon.geojson');
+            let response, earthquakes, hawaii, table;
+            response = await fetch('assets/hawaii.earthqakes.json');
             earthquakes = await response.json();
-            response = await fetch('assets/japan.json');
-            japan = await response.json();
+            response = await fetch('assets/hawaii.geojson');
+            hawaii = await response.json();
 
             table = document.getElementsByTagName("table")[0];
             let row, cell1, cell2, cell3;
@@ -107,7 +107,7 @@
                 cell1 = row.insertCell(0);
                 cell2 = row.insertCell(1);
                 cell3 = row.insertCell(2);
-                cell1.innerHTML = earthquakes.features[i].properties.id;
+                cell1.innerHTML = earthquakes.features[i].properties.place;
                 cell2.innerHTML = earthquakes.features[i].properties.mag;
                 cell3.innerHTML = new Date(earthquakes.features[i].properties.time).toLocaleDateString(
                     "en-US");
@@ -127,25 +127,25 @@
                     'type': 'circle',
                     'source': 'earthquakes',
                     'paint': {
-                        'circle-radius': 8,
-                        'circle-stroke-width': 2,
-                        'circle-color': 'red',
-                        'circle-stroke-color': 'white'
+                        'circle-radius': 4,
+                        'circle-stroke-width': 1,
+                        'circle-color': '#F6BE00',
+                        'circle-stroke-color': 'green'
                     }
                 });
 
 
-                map.addSource('japan', {
+                map.addSource('hawaii', {
                     type: 'geojson',
-                    data: japan
+                    data: hawaii
                 });
 
                 map.addLayer({
-                    'id': 'japan-layer',
+                    'id': 'hawaii-layer',
                     'type': 'fill',
-                    'source': 'japan',
+                    'source': 'hawaii',
                     'paint': {
-                        'fill-color': '#0080ff', // blue color fill
+                        'fill-color': 'purple', // blue color fill
                         'fill-opacity': 0.5
                     }
                 });
@@ -163,7 +163,7 @@
             cell1 = row.insertCell(0);
             cell2 = row.insertCell(1);
             cell3 = row.insertCell(2);
-            cell1.innerHTML = earthquakes.features[i].properties.id;
+            cell1.innerHTML = earthquakes.features[i].properties.place;
             cell2.innerHTML = earthquakes.features[i].properties.mag;
             cell3.innerHTML = new Date(earthquakes.features[i].properties.time).toLocaleDateString("en-US");
         }
@@ -190,8 +190,8 @@
                     shouldSwitch = false;
                     /*Get the two elements you want to compare,
                     one from current row and one from the next:*/
-                    x = parseFloat(rows[i].getElementsByTagName("td")[1].innerHTML);
-                    y = parseFloat(rows[i + 1].getElementsByTagName("td")[1].innerHTML);
+                    x = parseFloat(rows[i].getElementsByTagName("th")[1].innerHTML);
+                    y = parseFloat(rows[i + 1].getElementsByTagName("th")[1].innerHTML);
                     //check if the two rows should switch place:
                     if (x < y) {
                         //if so, mark as a switch and break the loop:
@@ -207,6 +207,23 @@
                 }
             }
         }
+        document.getElementById("side-panel").style.display = "none";
+        function checkWindowSize() {
+        var mapContainer = document.getElementById("side-panel");
+
+        // Check if the width is smaller than 1024px
+        if (window.innerWidth < 1024) {
+            mapContainer.style.display = "none"; // Hide the div
+        } else {
+            mapContainer.style.display = "block"; // Show the div
+        }
+    }
+
+    // Initial check on page load
+    checkWindowSize();
+
+    // Listen for window resize events
+    window.addEventListener("resize", checkWindowSize);
     </script>
 
 </body>
